@@ -11,8 +11,7 @@ var buyViaCounter = 0; //used to not send as many emails.  This is only a tempor
 //Set the interval in ms on how fast to check the website.
 setInterval(function () {
     getMonitorList();
-//    isItWorking();
-}, 10000);
+}, 60000);
 
 
 /**
@@ -98,24 +97,24 @@ function sendEmail(body, to, name, subjectInfo) {
     var postmark = require("postmark")(process.env.POSTMARK_API_KEY);
     var subject = name + " - " + subjectInfo;
 
-    console.log('body ' + body);
-    console.log('to ' + to);
-    console.log('name ' + name);
-    console.log('subjectInfo' + subjectInfo);
+//    console.log('body ' + body);
+//    console.log('to ' + to);
+//    console.log('name ' + name);
+//    console.log('subjectInfo' + subjectInfo);
 
-//    postmark.send({
-//        "From": "jeremy@stowellzone.com",
-//        "To": to,
-//        "Subject": subject,
-//        "TextBody": body,
-//        "Tag": "big-bang"
-//    }, function (error) {
-//        if (error) {
-//            console.error("Unable to send via postmark: " + error.message);
-//            return;
-//        }
-//        console.info("Sent to postmark for delivery - " + subject);
-//    });
+    postmark.send({
+        "From": "jeremy@stowellzone.com",
+        "To": to,
+        "Subject": subject,
+        "TextBody": body,
+        "Tag": "big-bang"
+    }, function (error) {
+        if (error) {
+            console.error("Unable to send via postmark: " + error.message);
+            return;
+        }
+        console.info("Sent to postmark for delivery - " + subject);
+    });
 
 }
 
