@@ -10,8 +10,9 @@ var buyViaCounter = 0; //used to not send as many emails.  This is only a tempor
 
 //Set the interval in ms on how fast to check the website.
 setInterval(function () {
-    getMonitorList();
-}, 60000);
+//    getMonitorList();
+    console.log('##########  HERE  ##############');
+}, 9000);
 
 
 /**
@@ -79,7 +80,7 @@ function checkBuyViaStock(website, to, name) {
                 buyViaCounter = 15;//Setting buyvia mute.
             }
             else {
-                if (buyViaCounter != 0 ) buyViaCounter--;
+                if (buyViaCounter != 0) buyViaCounter--;
                 console.info('.');
             }
         }
