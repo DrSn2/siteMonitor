@@ -129,9 +129,9 @@ app.post('/account/profile', passportConf.isAuthenticated, userController.postUp
 app.post('/account/password', passportConf.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConf.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConf.isAuthenticated, userController.getOauthUnlink);
-app.get('/monitor', monitorController.getMonitor);
-app.post('/monitor', monitorController.postMonitor);
-app.delete('/monitor', monitorController.deleteMonitor);
+app.get('/monitor', passportConf.isAuthenticated, monitorController.getMonitor);
+app.post('/monitor', passportConf.isAuthenticated, monitorController.postMonitor);
+app.delete('/monitor', passportConf.isAuthenticated, monitorController.deleteMonitor);
 
 /**
  * OAuth routes for sign-in.
