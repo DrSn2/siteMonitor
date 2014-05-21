@@ -139,8 +139,6 @@ function setDatabaseValues(id, listLink) {
  */
 function getMonitorList() {
     Monitor.find().exec(function (err, monitors) {
-        //console.log(monitors);
-//        console.log(monitors[0]);
         monitors.forEach(function (m) {
             if (m != null) {
                 if (m.url.indexOf('ksl.com') !== -1) checkKslClassifiedPage(m._id, m.url, m.listLink, m.to, m.name);
