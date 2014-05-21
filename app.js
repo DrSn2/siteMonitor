@@ -191,7 +191,7 @@ app.use(errorHandler());
  * Start the Monitor
  */
 
-//var monitor = require('./monitor');
+var monitor = require('./monitor');
 
 /**
  * Start Express server.

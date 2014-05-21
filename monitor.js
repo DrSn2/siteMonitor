@@ -1,10 +1,14 @@
 var request = require('request');
 var cheerio = require('cheerio');
-var mongo = require('mongodb');
+var secrets = require('./config/secrets');
+var Monitor = require('./models/Monitor');
 
-var mongoUri = process.env.MONGOLAB_URI ||
-    process.env.MONGOHQ_URL ||
-    'mongodb://localhost/siteMonitor';
+//Database Connection
+var mongoose = require('mongoose');
+mongoose.connect(secrets.db);
+mongoose.connection.on('error', function () {
+    console.error('✗ MongoDB Connection Error. Please make sure MongoDB is running.');
+});
 
 var buyViaCounter = 0; //used to not send as many emails.  This is only a temporary fix.  If more than 1 buyvia listing is used this will need to be refactored to allow that.
 
@@ -124,35 +128,25 @@ function sendEmail(body, to, name, subjectInfo) {
  * @param listLink - top most listLink
  */
 function setDatabaseValues(id, listLink) {
-    mongo.Db.connect(mongoUri, function (err, db) {
-        db.collection('monitoring', function (er, collection) {
-            if (collection.find({ '_id': id})) {
-                collection.update({'_id': id}, {$set: {'listLink': listLink}}, function (er, rs) {
-                });
-            } else {
-                collection.insert({'_id': id, 'listLink': listLink}, {safe: true}, function (er, rs) {
-                });
-            }
-        });
+    Monitor.update({'_id': id}, { listLink: listLink}, function (err) {
+        if (err) console.log('error updating document');
     });
 }
 
 
 /**
- * Query to the database to get all the different monitors to search.
+ * Query to the database to get all the different monitors to search and call the methods to perform the search.
  */
 function getMonitorList() {
-    mongo.Db.connect(mongoUri, function (err, db) {
-        db.collection('monitoring', function (er, collection) {
-            collection.find(function (err, cursor) {
-                cursor.each(function (err, m) {
-                    if (m != null) {
-                        if (m.url.indexOf('ksl.com') !== -1) checkKslClassifiedPage(m._id, m.url, m.listLink, m.to, m.name);
-                        else if (m.url.indexOf('buyvia.com') !== -1) checkBuyViaStock(m.url, m.to, m.name);  //TODO need to add a sleep to this so that it will not send a new email every 60 seconds.
-                        else console.info('Unknown monitor....');
-                    }
-                })
-            })
-        });
+    Monitor.find().exec(function (err, monitors) {
+        //console.log(monitors);
+//        console.log(monitors[0]);
+        monitors.forEach(function (m) {
+            if (m != null) {
+                if (m.url.indexOf('ksl.com') !== -1) checkKslClassifiedPage(m._id, m.url, m.listLink, m.to, m.name);
+                else if (m.url.indexOf('buyvia.com') !== -1) checkBuyViaStock(m.url, m.to, m.name);  //TODO need to add a sleep to this so that it will not send a new email every 60 seconds.
+                else console.info('Unknown monitor....');
+            }
+        })
     });
 }
