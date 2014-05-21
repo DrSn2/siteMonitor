@@ -79,7 +79,7 @@ function checkBuyViaStock(website, to, name) {
                 buyViaCounter = 15;//Setting buyvia mute.
             }
             else {
-                if (buyViaCounter != 0 ) buyViaCounter--;
+                if (buyViaCounter != 0) buyViaCounter--;
                 console.info('.');
             }
         }
