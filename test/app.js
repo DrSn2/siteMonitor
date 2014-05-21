@@ -25,14 +25,6 @@ describe('GET /signup', function() {
   });
 });
 
-describe('GET /api', function() {
-  it('should return 200 OK', function(done) {
-    request(app)
-      .get('/api')
-      .expect(200, done);
-  });
-});
-
 describe('GET /contact', function() {
   it('should return 200 OK', function(done) {
     request(app)
@@ -40,6 +32,14 @@ describe('GET /contact', function() {
       .expect(200, done);
   });
 });
+
+//describe('GET /monitor', function() {
+//    it('should return 200 OK', function(done) {
+//        request(app)
+//            .get('/monitor')
+//            .expect(200, done);
+//    });
+//});
 
 describe('GET /random-url', function() {
   it('should return 404', function(done) {

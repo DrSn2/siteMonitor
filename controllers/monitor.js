@@ -19,7 +19,16 @@ exports.getMonitor = function (req, res) {
  */
 
 exports.postMonitor = function (req, res) {
-    console.log('posting monitor');
+    req.assert('name', 'Name cannot be blank').notEmpty();
+    req.assert('email', 'Email is not valid').isEmail();
+    req.assert('url', 'Message cannot be blank').notEmpty();
+
+    var errors = req.validationErrors();
+
+    if (errors) {
+        req.flash('errors', errors);
+        return res.redirect('/monitor');
+    }
 
     var name = req.body.name;
     var email = req.body.email;
