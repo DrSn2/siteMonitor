@@ -1,8 +1,8 @@
 extends layout
 block content
     h1 Monitor
-    button.fa.fa-plus(type="button" class="btn btn-primary")#toggleMonitor  Add Monitor
 
+    button.fa.fa-plus(type="button" class="btn btn-primary")#toggleMonitor  Add Monitor
     #monitorForm
         form.form-horizontal(role='form', method='POST')
             input(type='hidden', name='_csrf', value=_csrf)
@@ -24,7 +24,6 @@ block content
                         i.fa.fa-mail-forward
                         | Create monitor
 
-
     each monitor in monitors
         .monitor.well.well-lg
             strong ID:
@@ -40,4 +39,3 @@ block content
             = monitor.url
             br
             a(href="/delete") Delete
-
