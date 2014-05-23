@@ -11,11 +11,11 @@ $(document).ready(function () {
         if (confirm("Are you sure you want to delete that monitor?")) {
             var dataID = $(this).attr("data-id");
             $.ajax({
-                url: "api/" + dataID,  //TODO add correct ID
-                context: $(this),
+                url: "api/" + dataID,
+                context: $(this).closest("div"),
                 type: "DELETE"
             }).done(function () {
-                $(this).hide();  //TODO remove div with ID.  Removes deleted monitor.
+                $(this).fadeOut("slow");  
             });
         }
     });
