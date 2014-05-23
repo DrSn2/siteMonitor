@@ -26,16 +26,21 @@ block content
 
     each monitor in monitors
         .monitor.well.well-lg
-            strong ID:
+            h3
+                strong Monitor name:&nbsp;&nbsp;
+                = monitor.name
+                |&nbsp;&nbsp;
+                a(href="#" data-id=monitor.id).delete
+                    i.fa.fa-trash-o
+            hr
+            strong ID:&nbsp;&nbsp;
             = monitor.id
             br
-            strong Listing:
-            = monitor.name
-            br
-            strong Email:
+            strong Email:&nbsp;&nbsp;
             = monitor.to
             br
-            strong Url:
+            strong Url:&nbsp;&nbsp;
             = monitor.url
             br
-            a(href="#" data-id=monitor.id).delete Delete
+
+
