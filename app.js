@@ -28,6 +28,7 @@ var homeController = require('./controllers/home');
 var userController = require('./controllers/user');
 var contactController = require('./controllers/contact');
 var monitorController = require('./controllers/monitor');
+var apiController = require('./controllers/api');
 
 /**
  * API keys + Passport configuration.
@@ -59,7 +60,7 @@ var week = day * 7;
  * CSRF Whitelist
  */
 
-var whitelist = ['/url1', '/url2'];
+//var whitelist = ['/api/', '/url2'];
 
 /**
  * Express configuration.
@@ -89,7 +90,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(function (req, res, next) {
-    if (whitelist.indexOf(req.path) !== -1) next();
+    if (req.originalUrl.match(/\/api\/\w+/)) next();
     else csrf(req, res, next);
 });
 app.use(function (req, res, next) {
@@ -131,7 +132,7 @@ app.post('/account/delete', passportConf.isAuthenticated, userController.postDel
 app.get('/account/unlink/:provider', passportConf.isAuthenticated, userController.getOauthUnlink);
 app.get('/monitor', passportConf.isAuthenticated, monitorController.getMonitor);
 app.post('/monitor', passportConf.isAuthenticated, monitorController.postMonitor);
-app.delete('/monitor', passportConf.isAuthenticated, monitorController.deleteMonitor);
+app.del('/api/:monitor_id', passportConf.isAuthenticated, apiController.deleteMonitor);
 
 /**
  * OAuth routes for sign-in.
