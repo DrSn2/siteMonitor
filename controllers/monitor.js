@@ -31,28 +31,23 @@ exports.postMonitor = function (req, res) {
     }
 
     var name = req.body.name;
-    var email = req.body.email;
+    var to = req.body.email;
     var url = req.body.url;
 
     var m = new Monitor();
     m.name = name;
-    m.email = email;
+    m.to = to;
     m.url = url;
 
     m.save(function (err) {
-        if (err)
-//            req.flash('error', { msg: 'Error adding Monitor to db' });  //TODO add flash messages for success/failure
-            console.log('Error adding Monitor to DB')
-
+        if (err) {
+            console.log('Error adding Monitor to DB: ' + err)
+            req.flash('errors', { msg: 'Failed to add montitor ' + err  });
+            res.redirect('/monitor');
+        }
+        else {
+            req.flash('success', { msg: 'Monitor ' + name + ' has been added!' });
+            res.redirect('/monitor');
+        }
     });
-    req.flash('success', { msg: 'Monitor ' + name + 'has been added!' });
-    res.redirect('/monitor');
 };
-
-/**
- * Delete /monitor
- */
-
-exports.deleteMonitor = function (req, res) {
-    console.log('delete');
-}

@@ -132,7 +132,7 @@ app.post('/account/delete', passportConf.isAuthenticated, userController.postDel
 app.get('/account/unlink/:provider', passportConf.isAuthenticated, userController.getOauthUnlink);
 app.get('/monitor', passportConf.isAuthenticated, monitorController.getMonitor);
 app.post('/monitor', passportConf.isAuthenticated, monitorController.postMonitor);
-app.del('/api/:monitor_id', passportConf.isAuthenticated, apiController.deleteMonitor);
+app.delete('/api/:monitor_id', passportConf.isAuthenticated, apiController.deleteMonitor);
 
 /**
  * OAuth routes for sign-in.

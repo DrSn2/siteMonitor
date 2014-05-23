@@ -7,14 +7,17 @@ $(document).ready(function () {
     });
 
     $(".delete").click(function () {
-        confirm("Delete");
-        $.ajax({
-            url: "api/12345",  //TODO add correct ID
-            context: document.body,
-            type: "DELETE"
-        }).done(function() {
-            $( this ).addClass( "done" );  //TODO remove div with ID.  Removes deleted monitor.
-        });
+//        var confirm = confirm("Delete");
+        if (confirm("Are you sure you want to delete that monitor?")) {
+            var dataID = $(this).attr("data-id");
+            $.ajax({
+                url: "api/" + dataID,  //TODO add correct ID
+                context: $(this),
+                type: "DELETE"
+            }).done(function () {
+                $(this).hide();  //TODO remove div with ID.  Removes deleted monitor.
+            });
+        }
     });
 });
 
