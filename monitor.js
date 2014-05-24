@@ -2,7 +2,6 @@ var request = require('request');
 var cheerio = require('cheerio');
 var secrets = require('./config/secrets');
 var Monitor = require('./models/Monitor');
-var mandrill = require('mandrill-api/mandrill');
 
 //Database Connection
 var mongoose = require('mongoose');
