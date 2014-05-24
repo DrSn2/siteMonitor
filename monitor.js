@@ -2,6 +2,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var secrets = require('./config/secrets');
 var Monitor = require('./models/Monitor');
+var mandrill = require('mandrill-api/mandrill');
 
 //Database Connection
 var mongoose = require('mongoose');
@@ -98,7 +99,7 @@ function checkBuyViaStock(website, to, name) {
  * @param subjectInfo - Info appended to the end of the email subject.  Used to give more detail as to what the notification is for.
  */
 function sendEmail(body, to, name, subjectInfo) {
-    var postmark = require("postmark")(process.env.POSTMARK_API_KEY);
+    var mandrill_client = new mandrill.Mandrill(secrets.mandrill);
     var subject = name + " - " + subjectInfo;
 
 //    console.log('body ' + body);
@@ -106,18 +107,17 @@ function sendEmail(body, to, name, subjectInfo) {
 //    console.log('name ' + name);
 //    console.log('subjectInfo' + subjectInfo);
 
-    postmark.send({
+    mandrill_client.send({
         "From": "jeremy@stowellzone.com",
         "To": to,
         "Subject": subject,
-        "TextBody": body,
-        "Tag": "big-bang"
+        "TextBody": body
     }, function (error) {
         if (error) {
-            console.error("Unable to send via postmark: " + error.message);
+            console.error("Unable to send: " + error.message);
             return;
         }
-        console.info("Sent to postmark for delivery - " + subject);
+        console.info("Sent for delivery - " + subject);
     });
 
 }
