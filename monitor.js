@@ -107,7 +107,7 @@ function sendEmail(body, to, name, subjectInfo) {
             to: [
                 {email: to}
             ],
-            from_email: secrets.fromMail,
+            from_email: secrets.mandrill.fromEmail,
             subject: subject,
             text: body
         }

@@ -26,7 +26,7 @@ module.exports = {
     mandrill: {
         login: process.env.MANDRILL_USERNAME || '',
         password: process.env.MANDRILL_APIKEY || '',
-        from: process.env.MANDRILL_FROM||""
+        fromEmail: process.env.MANDRILL_FROM||""
     },
 
     nyt: {
