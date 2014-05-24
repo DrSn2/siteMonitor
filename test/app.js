@@ -25,13 +25,7 @@ describe('GET /signup', function() {
   });
 });
 
-describe('GET /contact', function() {
-  it('should return 200 OK', function(done) {
-    request(app)
-      .get('/contact')
-      .expect(200, done);
-  });
-});
+
 
 //describe('GET /monitor', function() {
 //    it('should return 200 OK', function(done) {
