@@ -107,7 +107,7 @@ function sendEmail(body, to, name, subjectInfo) {
 //    console.log('name ' + name);
 //    console.log('subjectInfo' + subjectInfo);
 
-    mandrill_client.send({
+    mandrill_client.messages.send({
         "From": "jeremy@stowellzone.com",
         "To": to,
         "Subject": subject,
