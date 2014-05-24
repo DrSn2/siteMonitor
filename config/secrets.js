@@ -31,8 +31,8 @@ module.exports = {
     },
 
     mandrill: {
-        login: process.env.MANDRILL_LOGIN || '',
-        password: process.env.MANDRILL_PASSWORD || ''
+        login: process.env.MANDRILL_USERNAME || '',
+        password: process.env.MANDRILL_APIKEY || ''
     },
 
     sendgrid: {
