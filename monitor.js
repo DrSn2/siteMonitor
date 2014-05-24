@@ -99,26 +99,27 @@ function checkBuyViaStock(website, to, name) {
  * @param subjectInfo - Info appended to the end of the email subject.  Used to give more detail as to what the notification is for.
  */
 function sendEmail(body, to, name, subjectInfo) {
-    var mandrill_client = new mandrill.Mandrill(secrets.mandrill);
+    var mandrill = require('node-mandrill')(secrets.mandrill.password);
     var subject = name + " - " + subjectInfo;
 
-//    console.log('body ' + body);
-//    console.log('to ' + to);
-//    console.log('name ' + name);
-//    console.log('subjectInfo' + subjectInfo);
-
-    mandrill_client.messages.send({
-        "From": "jeremy@stowellzone.com",
-        "To": to,
-        "Subject": subject,
-        "TextBody": body
-    }, function (error) {
-        if (error) {
-            console.error("Unable to send: " + error.message);
-            return;
+    //send an e-mail to jim rubenstein
+    mandrill('/messages/send', {
+        message: {
+            to: [
+                {email: to}
+            ],
+            from_email: secrets.fromMail,
+            subject: subject,
+            text: body
         }
-        console.info("Sent for delivery - " + subject);
+    }, function (error, response) {
+        //uh oh, there was an error
+        if (error) console.log(JSON.stringify(error));
+
+        //everything's good, lets see what mandrill said
+        else console.log(response);
     });
+
 
 }
 
