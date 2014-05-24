@@ -15,6 +15,7 @@ var buyViaCounter = 0; //used to not send as many emails.  This is only a tempor
 //Set the interval in ms on how fast to check the website.
 setInterval(function () {
     getMonitorList();
+    pingServer();
 }, 60000);
 
 
@@ -146,5 +147,11 @@ function getMonitorList() {
                 else console.info('Unknown monitor....');
             }
         })
+    });
+}
+
+function pingServer() {
+    request(secrets.serverURL, function (error) {
+        if (error) console.log('Error pinging server');
     });
 }

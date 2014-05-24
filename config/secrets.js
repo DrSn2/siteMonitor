@@ -23,6 +23,8 @@ module.exports = {
 
     sessionSecret: process.env.SESSION_SECRET || 'Your Session Secret goes here',
 
+    serverURL: process.env.SERVER_URL || 'http://localhost:3000',
+
     mandrill: {
         login: process.env.MANDRILL_USERNAME || '',
         password: process.env.MANDRILL_APIKEY || '',
