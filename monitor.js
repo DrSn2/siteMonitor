@@ -124,7 +124,7 @@ function sendEmail(body, to, name, subjectInfo) {
 }
 
 /**
- * Sets the listLink changes in the database for the given url.  //TODO this will need a more unique search than the url.  As there could be multiple listings per url.
+ * Sets the listLink changes in the database for the given url.
  * @param id - id of listing.
  * @param listLink - top most listLink
  */
