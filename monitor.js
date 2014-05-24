@@ -15,6 +15,7 @@ var buyViaCounter = 0; //used to not send as many emails.  This is only a tempor
 //Set the interval in ms on how fast to check the website.
 setInterval(function () {
     getMonitorList();
+    pingServer();
 }, 60000);
 
 
@@ -123,7 +124,7 @@ function sendEmail(body, to, name, subjectInfo) {
 }
 
 /**
- * Sets the listLink changes in the database for the given url.  //TODO this will need a more unique search than the url.  As there could be multiple listings per url.
+ * Sets the listLink changes in the database for the given url.
  * @param id - id of listing.
  * @param listLink - top most listLink
  */
@@ -146,5 +147,11 @@ function getMonitorList() {
                 else console.info('Unknown monitor....');
             }
         })
+    });
+}
+
+function pingServer() {
+    request(secrets.serverURL, function (error) {
+        if (error) console.log('Error pinging server');
     });
 }

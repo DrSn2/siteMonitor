@@ -15,7 +15,7 @@ var methodOverride = require('method-override');
 var MongoStore = require('connect-mongo')({ session: session });
 var flash = require('express-flash');
 var path = require('path');
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
 var passport = require('passport');
 var expressValidator = require('express-validator');
 var connectAssets = require('connect-assets');
@@ -46,10 +46,10 @@ var app = express();
  * Mongoose configuration.
  */
 
-mongoose.connect(secrets.db);
-mongoose.connection.on('error', function () {
-    console.error('✗ MongoDB Connection Error. Please make sure MongoDB is running.');
-});
+//mongoose.connect(secrets.db);
+//mongoose.connection.on('error', function () {
+//    console.error('✗ MongoDB Connection Error. Please make sure MongoDB is running.');
+//});
 
 var hour = 3600000;
 var day = hour * 24;
