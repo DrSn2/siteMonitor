@@ -29,9 +29,17 @@ block content
             h3
                 strong Monitor name:&nbsp;&nbsp;
                 = monitor.name
-                |&nbsp;&nbsp;
+                | &nbsp;&nbsp;
                 a(href="#" data-id=monitor.id).delete
                     i.fa.fa-trash-o
+            | Monitor status:&nbsp;
+            if monitor.isActive
+
+                a(href="#" data-id=monitor.id).toggleActive
+                    | Active
+            else
+                a(href="#" data-id=monitor.id).toggleActive
+                    | Disabled
             hr
             strong ID:&nbsp;&nbsp;
             = monitor.id
