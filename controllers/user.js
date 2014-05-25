@@ -86,7 +86,7 @@ exports.postSignup = function (req, res, next) {
 
     var errors = req.validationErrors();
 
-    if (secrets.allowSiteSignup == false) {
+    if (secrets.allowSiteSignup != 'true') {
         req.flash('errors', { msg: 'Signup is currently disabled by the administrator.' });
         return res.redirect('/');
     }
