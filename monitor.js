@@ -14,7 +14,7 @@ var buyViaCounter = 0; //used to not send as many emails.  This is only a tempor
 
 //Set the interval in ms on how fast to check the website.
 setInterval(function () {
-    if (secrets.isMonitorActive) {
+    if (secrets.isMonitorActive == 'true') {
         getMonitorList();
         pingServer();
     }
