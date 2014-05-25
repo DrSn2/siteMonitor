@@ -27,6 +27,8 @@ module.exports = {
 
     isMonitorActive: process.env.IS_MONITOR_ACTIVE || true,
 
+    allowSiteSignup: process.env.ALLOW_SIGNUP || true,
+
     mandrill: {
         login: process.env.MANDRILL_USERNAME || '',
         password: process.env.MANDRILL_APIKEY || '',
