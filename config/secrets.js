@@ -25,6 +25,8 @@ module.exports = {
 
     serverURL: process.env.SERVER_URL || 'http://localhost:3000',
 
+    isMonitorActive: process.env.IS_MONITOR_ACTIVE || true,
+
     mandrill: {
         login: process.env.MANDRILL_USERNAME || '',
         password: process.env.MANDRILL_APIKEY || '',

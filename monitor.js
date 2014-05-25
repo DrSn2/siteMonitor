@@ -14,8 +14,11 @@ var buyViaCounter = 0; //used to not send as many emails.  This is only a tempor
 
 //Set the interval in ms on how fast to check the website.
 setInterval(function () {
-    getMonitorList();
-    pingServer();
+    if (secrets.isMonitorActive) {
+        getMonitorList();
+        pingServer();
+    }
+    else console.log("monitor is not active, please turn it on.");
 }, 60000);
 
 
@@ -139,15 +142,17 @@ function setDatabaseValues(id, listLink) {
  * Query to the database to get all the different monitors to search and call the methods to perform the search.
  */
 function getMonitorList() {
-    Monitor.find().exec(function (err, monitors) {
-        monitors.forEach(function (m) {
-            if (m != null) {
-                if (m.url.indexOf('ksl.com') !== -1) checkKslClassifiedPage(m._id, m.url, m.listLink, m.to, m.name);
-                else if (m.url.indexOf('buyvia.com') !== -1) checkBuyViaStock(m.url, m.to, m.name);  //TODO need to add a sleep to this so that it will not send a new email every 60 seconds.
-                else console.info('Unknown monitor....');
-            }
-        })
-    });
+    Monitor.find()
+        .where('isActive').equals(true)
+        .exec(function (err, monitors) {
+            monitors.forEach(function (m) {
+                if (m != null) {
+                    if (m.url.indexOf('ksl.com') !== -1) checkKslClassifiedPage(m._id, m.url, m.listLink, m.to, m.name);
+                    else if (m.url.indexOf('buyvia.com') !== -1) checkBuyViaStock(m.url, m.to, m.name);  //TODO need to add a sleep to this so that it will not send a new email every 60 seconds.
+                    else console.info('Unknown monitor....');
+                }
+            })
+        });
 }
 
 function pingServer() {
