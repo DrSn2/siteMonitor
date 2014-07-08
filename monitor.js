@@ -156,7 +156,12 @@ function getMonitorList() {
 }
 
 function pingServer() {
-    request(secrets.serverURL, function (error) {
-        if (error) console.log('Error pinging server');
-    });
+    if (secrets.serverURL.length > 1 && secrets.serverURL != 'http://localhost:3000') {
+        request(secrets.serverURL, function (error) {
+            if (error) console.log('Error pinging server');
+        });
+    }
+    else {
+        console.log('If you are on a service that needs a ping to keep the app alive, you will need to add a global variable of SERVER_URL to point to the root url of the app.');
+    }
 }
