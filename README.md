@@ -3,7 +3,7 @@
 
 Monitor a website and get notifications of important events.  Currently works with ksl.com.
 
-[ ![Codeship Status for fohtoh/siteMonitor](https://codeship.com/projects/987dc7d0-abf2-0132-4f48-46f15878b48e/status?branch=master)](https://codeship.com/projects/68444)
+[ ![Codeship Status for fohtoh/siteMonitor  -- develop branch](https://codeship.com/projects/987dc7d0-abf2-0132-4f48-46f15878b48e/status?branch=develop)](https://codeship.com/projects/68444)
 
 ###Installation
 
