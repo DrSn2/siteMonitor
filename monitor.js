@@ -105,7 +105,6 @@ function sendEmail(body, to, name, subjectInfo) {
     var mandrill = require('node-mandrill')(secrets.mandrill.password);
     var subject = name + " - " + subjectInfo;
 
-    //send an e-mail to jim rubenstein
     mandrill('/messages/send', {
         message: {
             to: [
