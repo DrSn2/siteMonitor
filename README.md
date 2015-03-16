@@ -1,6 +1,8 @@
-#siteMonitor  [ ![Codeship Status for fohtoh/siteMonitor  -- develop branch](https://codeship.com/projects/987dc7d0-abf2-0132-4f48-46f15878b48e/status?branch=develop)](https://codeship.com/projects/68444)
+#siteMonitor
 
 Monitor a website and get notifications of important events.  Currently works with ksl.com classified ads.
+
+[ ![Codeship Status for fohtoh/siteMonitor  -- develop branch](https://codeship.com/projects/987dc7d0-abf2-0132-4f48-46f15878b48e/status?branch=develop)](https://codeship.com/projects/68444)
 
 ###Installation
 
