@@ -29,10 +29,10 @@ module.exports = {
 
     allowSiteSignup: process.env.ALLOW_SIGNUP || 'true',
 
-    mandrill: {
-        login: process.env.MANDRILL_USERNAME || '',
-        password: process.env.MANDRILL_APIKEY || '',
-        fromEmail: process.env.MANDRILL_FROM||""
+    mailgun: {
+        apiKey: process.env.MAILGUN_APIKEY || '',
+        domain: process.env.MAILGUN_DOMAIN || '',
+        fromEmail: process.env.MAILGUN_FROM || ''
     },
 
     nyt: {
