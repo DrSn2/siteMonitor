@@ -40,6 +40,7 @@
     "morgan": "^1.0.0",
     "node-foursquare": "^0.2.1",
     "node-linkedin": "^0.2.0",
+    "nodemailer": "^0.6.3",
     "passport": "^0.2.0",
     "passport-facebook": "^1.0.3",
     "passport-github": "^0.1.5",
