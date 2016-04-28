@@ -95,34 +95,27 @@ function checkBuyViaStock(website, to, name) {
 }
 
 /**
- * Used to send the email message.  Currently setup to postmark addon through Heroku.
- * @param body - Email body.
- * @param to - User to send the notification to.
- * @param name - Name of the notification.
- * @param subjectInfo - Info appended to the end of the email subject.  Used to give more detail as to what the notification is for.
+ * Used to send the email message.  Setup to use mailgun as the mail provider.
+ * @param body
+ * @param to
+ * @param name
+ * @param subjectInfo
  */
 function sendEmail(body, to, name, subjectInfo) {
-    var mandrill = require('node-mandrill')(secrets.mandrill.password);
+    var mailgun = require('mailgun-js')({apiKey: secrets.mailgun.apiKey, domain: secrets.mailgun.domain});
     var subject = name + " - " + subjectInfo;
 
-    mandrill('/messages/send', {
-        message: {
-            to: [
-                {email: to}
-            ],
-            from_email: secrets.mandrill.fromEmail,
-            subject: subject,
-            text: body
-        }
-    }, function (error, response) {
-        //uh oh, there was an error
-        if (error) console.log(JSON.stringify(error));
+    var data = {
+        from: secrets.mailgun.fromEmail,
+        to: to,  //TODO - do I need to be able to pass in multiple emails like the mandrill one?
+        subject: subject,
+        text: body
+    };
 
-        //everything's good, lets see what mandrill said
-        else console.log(response);
+    mailgun.messages().send(data, function (err, body) {
+        if (err)console.log('Error sending mailgun mail: ' + err);
+        console.log(body);
     });
-
-
 }
 
 /**
@@ -131,7 +124,7 @@ function sendEmail(body, to, name, subjectInfo) {
  * @param listLink - top most listLink
  */
 function setDatabaseValues(id, listLink) {
-    Monitor.update({'_id': id}, { listLink: listLink}, function (err) {
+    Monitor.update({'_id': id}, {listLink: listLink}, function (err) {
         if (err) console.log('error updating document');
     });
 }
