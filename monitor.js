@@ -40,8 +40,9 @@ function checkKslClassifiedPage(id, website, to, name) {
                 currentListings = [];
 
             //load past listings from cache if available
-            if (cache.get('listings')) {
-                pastListings = cache.get('listings');
+            if (cache.get(id + '-listings')) {
+                // console.log('cache listing found: ' + cache.get(id + '-listings'));
+                pastListings = cache.get(id + '-listings');
             }
 
 
@@ -88,12 +89,11 @@ function checkKslClassifiedPage(id, website, to, name) {
             }
 
             //when finished comparing pastListings to currentListings.  Replace pastListings with currentListings
-            cache.del('listings');
-            cache.put('listings', currentListings);
+            cache.del(id + '-listings');
+            cache.put(id + '-listings', currentListings);
         }
     });
 }
-
 
 
 /**
@@ -164,7 +164,6 @@ function isLessThan5Minutes(timeOnSite) {
         }
     }
     return isLessThan5Minutes;
-
 }
 
 
@@ -175,13 +174,10 @@ function isLessThan5Minutes(timeOnSite) {
  * @returns {boolean}
  */
 function isListingNew(itemId, pastListings) {
-    //check memory for listingID.  If it is present then it is old, if not then it is new.
-    // if (pastListings.length > 0){
     pastListings.forEach(function (past) {
         if (itemId === past.itemId) {
             return false;
         }
     });
-    // }
     return true;
 }
