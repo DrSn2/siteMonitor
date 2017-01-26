@@ -26,7 +26,6 @@ setInterval(function () {
  * Checks the KSL classified page for changes to the given search criteria.
  * @param id - unique id of the listing.
  * @param website - The website Url to monitor.
- * @param listLink - The list link (a ksl term) for the top listing on the page.
  * @param to - Email address to send the notification to.
  * @param name - A name given for the search.  This is appended to the beginning of the email subject.
  */
@@ -62,6 +61,23 @@ function checkKslClassifiedPage(id, website, to, name) {
                         price: price,
                         timeOnSite: timeOnSite
                     });
+                }
+            });
+
+            //Check for a price decrease
+            currentListings.forEach(function (cl) {
+                var pl = pastListings.filter(function (obj) {
+                    return obj.itemId == cl.itemId;
+                });
+
+                if (pastListings.length > 0) {
+                    if (pl[0].price.replace('$', '') > cl.price.replace('$', '')) {
+                        console.log('Price drop - Sending notification');
+
+                        var messageBody = website + "\n";
+                        messageBody = messageBody + (cl.price + "(" + pl[0].price + ") - " + cl.title + "\n");
+                        sendEmail(messageBody, to, name, "(KSL Listing notification alert)");
+                    }
                 }
             });
 
