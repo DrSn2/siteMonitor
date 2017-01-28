@@ -76,7 +76,7 @@ function checkKslClassifiedPage(id, website, to, name) {
 
                         var messageBody = website + "\n";
                         messageBody = messageBody + (cl.price + "(" + pl[0].price + ") - " + cl.title + "\n");
-                        sendEmail(messageBody, to, name, "(KSL Listing notification alert)");
+                        sendEmail(messageBody, to, name, "(KSL Listing price drop alert)");
                     }
                 }
             });
