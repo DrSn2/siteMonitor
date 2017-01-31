@@ -81,27 +81,28 @@ function checkKslClassifiedPage(id, website, to, name) {
                 }
             });
 
-            //compare the top listing
-            if (isLessThan5Minutes(currentListings[0].timeOnSite)) {
 
-                //check to see if listing is new.  If it is, send notification
-                if (isListingNew(currentListings[0].itemId, pastListings)) {
-                    //send notification
-                    var messageBody = website + "\n";
-                    currentListings.forEach(function (l) {
-                        var title = l.title;
-                        var price = l.price;
-                        messageBody = messageBody + (price + " - " + title + "\n");
-                    });
+            //Check to make sure we have currentListings in the results before we compare.
+            if(currentListings[0] != undefined){
+                //compare the top listing
+                if (isLessThan5Minutes(currentListings[0].timeOnSite)) {
 
-                    sendEmail(messageBody, to, name, "(KSL Listing notification alert)");
+                    //check to see if listing is new.  If it is, send notification
+                    if (isListingNew(currentListings[0].itemId, pastListings)) {
+                        //send notification
+                        var messageBody = website + "\n";
+                        currentListings.forEach(function (l) {
+                            var title = l.title;
+                            var price = l.price;
+                            messageBody = messageBody + (price + " - " + title + "\n");
+                        });
 
-
+                        sendEmail(messageBody, to, name, "(KSL Listing notification alert)");
+                    }
                 }
-
-            }
-            else {
-                console.info('timeOnSite Greater than 5 minutes.  Not sending notification.');
+                else {
+                    console.info('timeOnSite Greater than 5 minutes.  Not sending notification.');
+                }
             }
 
             //when finished comparing pastListings to currentListings.  Replace pastListings with currentListings
