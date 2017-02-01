@@ -2,6 +2,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var secrets = require('./config/secrets');
 var Monitor = require('./models/Monitor');
+var cache = require('memory-cache');
 
 //Database Connection
 var mongoose = require('mongoose');
@@ -10,7 +11,6 @@ mongoose.connection.on('error', function () {
     console.error('✗ MongoDB Connection Error. Please make sure MongoDB is running.');
 });
 
-var buyViaCounter = 0; //used to not send as many emails.  This is only a temporary fix.  If more than 1 buyvia listing is used this will need to be refactored to allow that.
 
 //Set the interval in ms on how fast to check the website.
 setInterval(function () {
@@ -26,73 +26,92 @@ setInterval(function () {
  * Checks the KSL classified page for changes to the given search criteria.
  * @param id - unique id of the listing.
  * @param website - The website Url to monitor.
- * @param listLink - The list link (a ksl term) for the top listing on the page.
  * @param to - Email address to send the notification to.
  * @param name - A name given for the search.  This is appended to the beginning of the email subject.
  */
-function checkKslClassifiedPage(id, website, listLink, to, name) {
+function checkKslClassifiedPage(id, website, to, name) {
     request(website, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            var $ = cheerio.load(body);
+            var $ = cheerio.load(body),
+                $body = $('body'),
+                $listings = $body.find('.listing'),
+                pastListings = [],
+                currentListings = [];
 
-            /*Compare to see if the listings have changed.
-             * If it has not changed do nothing, if it has changed send out a notification of the change
-             */
-            var screenListLink = $('.listlink').first().attr('href');
-            var adTime = $('.adTime').first().text().trim().replace(/[^\d]/g, '');
+            //load past listings from cache if available
+            if (cache.get(id + '-listings')) {
+                // console.log('cache listing found: ' + cache.get(id + '-listings'));
+                pastListings = cache.get(id + '-listings');
+            }
 
-            if (listLink == screenListLink || screenListLink == undefined || screenListLink == null) {
-                console.info('.');
 
-            } else if (parseInt(adTime) < 5) { //adTime < 5 is used to make sure old ads will not send new notifications if the top listing drops off.
-                console.info('listing = ' + name);
-                console.info('old listLink = ' + listLink);
-                console.info('new listLink = ' + screenListLink);
+            //Scrape listings and store listing details in memory
+            $listings.each(function (i, item) {
+                if (item.attribs.class !== 'featured listing classifiedListing') {
+                    var title = $(item).find('.title').text().trim();
+                    var itemId = item.attribs['data-item-id'];
+                    var description = $(item).find('.description-text').text().trim();
+                    var price = $(item).find('.price').text().trim();
+                    var timeOnSite = $(item).find('.timeOnSite').text().replace('|', '').trim();
 
-                setDatabaseValues(id, screenListLink);
+                    currentListings.push({
+                        itemId: itemId,
+                        title: title,
+                        description: description,
+                        price: price,
+                        timeOnSite: timeOnSite
+                    });
+                }
+            });
 
-                var messageBody = website + "\n";
-                $('.adBox').each(function () {
-                    var title = $(this).find('.adTitle').text().trim();
-                    var price = $(this).find('.priceBox').text().trim();
-                    price = price.substring(0, price.length - 2) + "." + price.substring(price.length - 2, price.length);
-
-                    messageBody = messageBody + (price + " - " + title + "\n");
+            //Check for a price decrease
+            currentListings.forEach(function (cl) {
+                var pl = pastListings.filter(function (obj) {
+                    return obj.itemId == cl.itemId;
                 });
 
-                sendEmail(messageBody, to, name, "(KSL Listing notification alert)");
+                if (pastListings.length > 0) {
+                    if (pl[0].price.replace('$', '') > cl.price.replace('$', '')) {
+                        console.log('Price drop - Sending notification');
+
+                        var messageBody = website + "\n";
+                        messageBody = messageBody + (cl.price + "(" + pl[0].price + ") - " + cl.title + "\n");
+                        sendEmail(messageBody, to, name, "(KSL Listing price drop alert)");
+                    }
+                }
+            });
+
+
+            //Check to make sure we have currentListings in the results before we compare.
+            if(currentListings[0] != undefined){
+                //compare the top listing
+                if (isLessThan5Minutes(currentListings[0].timeOnSite)) {
+
+                    //check to see if listing is new.  If it is, send notification
+                    if (isListingNew(currentListings[0].itemId, pastListings)) {
+                        //send notification
+                        var messageBody = website + "\n";
+                        currentListings.forEach(function (l) {
+                            var title = l.title;
+                            var price = l.price;
+                            messageBody = messageBody + (price + " - " + title + "\n");
+                        });
+
+                        sendEmail(messageBody, to, name, "(KSL Listing notification alert)");
+                    }
+                }
+                else {
+                    console.info('timeOnSite Greater than 5 minutes.  Not sending notification.');
+                }
             }
-            else {
-                console.info('AdTime Greater than 5');
-                setDatabaseValues(id, screenListLink);
-            }
+
+            //when finished comparing pastListings to currentListings.  Replace pastListings with currentListings
+            cache.del(id + '-listings');
+            cache.put(id + '-listings', currentListings);
         }
     });
 }
 
-/**
- * Checks the BuyVia website for any active stock on the given url.  It monitors the page for the text 'Buy Now'.
- * @param website - Website to monitor
- * @param to - Email address to send notifications
- * @param name - A name given for the search.  This is appended to the beginning of the email subject.
- */
-function checkBuyViaStock(website, to, name) {
-    request(website, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var $ = cheerio.load(body);
-            var messageBody = website + "\n" + "There is a Buy Now link available.";
-
-            if ($('body').text().indexOf("Buy Now") !== -1 && buyViaCounter == 0) {
-                sendEmail(messageBody, to, name, "(BuyVia listing notification alert)");
-                buyViaCounter = 15;//Setting buyvia mute.
-            }
-            else {
-                if (buyViaCounter != 0) buyViaCounter--;
-                console.info('.');
-            }
-        }
-    });
-}
 
 /**
  * Used to send the email message.  Setup to use mailgun as the mail provider.
@@ -119,18 +138,6 @@ function sendEmail(body, to, name, subjectInfo) {
 }
 
 /**
- * Sets the listLink changes in the database for the given url.
- * @param id - id of listing.
- * @param listLink - top most listLink
- */
-function setDatabaseValues(id, listLink) {
-    Monitor.update({'_id': id}, {listLink: listLink}, function (err) {
-        if (err) console.log('error updating document');
-    });
-}
-
-
-/**
  * Query to the database to get all the different monitors to search and call the methods to perform the search.
  */
 function getMonitorList() {
@@ -139,8 +146,7 @@ function getMonitorList() {
         .exec(function (err, monitors) {
             monitors.forEach(function (m) {
                 if (m != null) {
-                    if (m.url.indexOf('ksl.com') !== -1) checkKslClassifiedPage(m._id, m.url, m.listLink, m.to, m.name);
-                    else if (m.url.indexOf('buyvia.com') !== -1) checkBuyViaStock(m.url, m.to, m.name);  //TODO need to add a sleep to this so that it will not send a new email every 60 seconds.
+                    if (m.url.indexOf('ksl.com') !== -1) checkKslClassifiedPage(m._id, m.url, m.to, m.name);
                     else console.info('Unknown monitor....');
                 }
             })
@@ -156,4 +162,39 @@ function pingServer() {
     else {
         console.log('If you are on a service that needs a ping to keep the app alive, you will need to add a global variable of SERVER_URL to point to the root url of the app.');
     }
+}
+
+/**
+ * Function to calculate if the listing is less than 5 minutes old.
+ * @param timeOnSite
+ * @returns {boolean}
+ */
+function isLessThan5Minutes(timeOnSite) {
+    var isLessThan5Minutes = false;
+    if (timeOnSite.indexOf('Sec') > -1) {
+        isLessThan5Minutes = true;
+    }
+    if (timeOnSite.indexOf('Min') > -1) {
+        var min = timeOnSite.replace('Min', '').trim();
+        if (min < 6) {
+            isLessThan5Minutes = true;
+        }
+    }
+    return isLessThan5Minutes;
+}
+
+
+/**
+ * Checks to see if the itemId was one of the past listings.  If not it is a new listing.
+ * @param itemId
+ * @param pastListings
+ * @returns {boolean}
+ */
+function isListingNew(itemId, pastListings) {
+    pastListings.forEach(function (past) {
+        if (itemId === past.itemId) {
+            return false;
+        }
+    });
+    return true;
 }
