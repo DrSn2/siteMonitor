@@ -1,8 +1,9 @@
 #siteMonitor
 
-Monitor a website and get notifications of important events.  Currently works with ksl.com classified ads.
+Monitors KSL classified ads.  Will notify of new ads or price drop(on page 1 of search).
 
-[ ![Codeship Status for fohtoh/siteMonitor](https://app.codeship.com/projects/965b54f0-c637-0134-7e57-7a0e44e66932/status?branch=master)](https://app.codeship.com/projects/198563)
+Has a user interface for administering listings.
+
 
 ###Installation
 
@@ -20,7 +21,3 @@ Monitor a website and get notifications of important events.  Currently works wi
     * MAILGUN_DOMAIN --> The domain where the mail will be coming from
     * MAILGUN_FROM  --> The from email address you would like the emails to be from.
     
-
-
-There is code that once worked with buyvia.com but has not been maintained.  This may be fixed in the future.
-But the main part was to have it work with KSL classified ads.
