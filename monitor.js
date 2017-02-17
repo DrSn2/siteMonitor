@@ -50,6 +50,7 @@ function checkKslClassifiedPage(id, website, to, name) {
                 if (item.attribs.class !== 'featured listing classifiedListing') {
                     var title = $(item).find('.title').text().trim();
                     var itemId = item.attribs['data-item-id'];
+                    if (itemId === undefined) itemId = item.attribs['data-id']; //Autos use a different itemId.
                     var description = $(item).find('.description-text').text().trim();
                     var price = $(item).find('.price').text().trim();
                     var timeOnSite = $(item).find('.timeOnSite').text().replace('|', '').trim();
